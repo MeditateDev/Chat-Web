@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/primas-favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Primas Chat App" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <script src="https://kit.fontawesome.com/ecb9297cf2.js" crossorigin="anonymous"></script>
+
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    
+    <!-- <link rel="stylesheet" href="normalize.css" />
+    <link rel="stylesheet" href="viewport-fix.css" /> -->
+    <link rel="stylesheet" href="%PUBLIC_URL%/loading.css" />
+    <title>Primas Chat</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="loading-animation" class="typing-indicator">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+    <div id="app" style="display: none;"></div>
+    <script>
+      window.addEventListener('load', function() {
+        const loading = document.getElementById('loading-animation');
+        const app = document.getElementById('app');
+        app.style.display = 'block';
+        loading.style.display = 'none';
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+PORT=3004
+
+PUBLIC_DOMAIN=https://uw-avaya-lab.primas.net:7462
+VIRTUAL_PATH=
+AUTHORIZATION=
+
+# default short code is 5. Example : ExfO2
+CODE_LENGTH=
+# default expire is 30 minutes
+LINK_EXPIRE_MINUTES=300
+
+DB_SERVER=localhost
+DB_NAME=shortlink
+
+DB_USER=
+DB_PASSWORD=
+DB_PROVIDER=mysql

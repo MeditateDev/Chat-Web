@@ -1,0 +1,6 @@
+/*
+ Optionally improve scrollbar performance by
+ treating the #viewport as the body.
+ */
+
+/* body { overflow: hidden } */

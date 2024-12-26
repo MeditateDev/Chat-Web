@@ -1,0 +1,116 @@
+import React, { useState } from 'react';
+import tw from 'tailwind-styled-components';
+import { Input, Typography, Button } from '@material-tailwind/react';
+import NumberCodeSelect from './NumberCodeSelect';
+
+const Field = tw.div`mobile:w-full w-[70%] rounded-lg px-5 flex flex-col transition-all`;
+const InputContainer = tw.div`flex gap-1 mb-1 flex flex-col`;
+const validateRegex = {
+  phone: /^[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im,
+  email: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/im,
+};
+
+const InputField = ({ data, errors, register, requireMsg, mark, trigger, setValue }) => {
+  const [showPassword, setShowPassword] = useState(false);
+  if (!data.answerVariable) return;
+  if (data.minLength > data.maxLength) {
+    [data.minLength, data.maxLength] = [data.maxLength, data.minLength];
+  }
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  const errorMessages = [
+    errors[data.answerVariable]?.type === 'validate-result' &&
+      (errors[data.answerVariable]?.message || `Please enter a valid value`),
+    errors[data.answerVariable]?.type === 'required' && requireMsg,
+    errors[data.answerVariable]?.type === 'pattern' && data.validationErrorMessage,
+    (errors[data.answerVariable]?.type === 'minLength' || errors[data.answerVariable]?.type === 'maxLength') && (
+      <span>
+        Please input {data.minLength != 0 && ` min ${data.minLength} character${data.minLength > 1 && `s`} `}
+        {data.minLength != 0 && data.maxLength != 0 && 'and'}
+        {data.maxLength && ` max ${data.maxLength} characters`}
+      </span>
+    ),
+  ].filter((e) => !!e);
+
+  return (
+    <Field>
+      <InputContainer className={data.inputType ? 'password-input' : ''}>
+        <Typography variant='h6' color='blue-gray'>
+          {data.label}
+          {mark && <span className='text-red-400'> *</span>}
+        </Typography>
+        <div className='relative flex w-full'>
+          {data.inputType === 'phone' && (
+            <NumberCodeSelect
+              register={register}
+              data={{ ...data, defaultValue: data.defaultValue.split(' ')[0] }}
+              setValue={setValue}
+              errors={errors}
+            />
+          )}
+          <Input
+            {...register(data.answerVariable, {
+              required: data.isRequired,
+              minLength: data.minLength,
+              maxLength: data.maxLength,
+              pattern: validateRegex[data.inputType],
+            })}
+            className={` text-sm w-full
+              ${data.inputType === 'password' ? 'rounded-r-none' : ''} 
+              ${
+                errors[data.answerVariable]
+                  ? 'focus:!border-t-red-500 !border-t-red-500'
+                  : '!border-t-blue-gray-200 focus:!border-t-gray-900'
+              }
+              ${data.inputType === 'phone' ? '!rounded-l-none' : ''} 
+            `}
+            labelProps={{
+              className: 'before:content-none after:content-none',
+            }}
+            containerProps={{
+              className: `${data.inputType === 'phone' ? '!min-w-0' : ''}`,
+            }}
+            error={!!errors[data.answerVariable]}
+            type={data.inputType === 'password' && showPassword ? 'text' : data.inputType || 'text'}
+            placeholder={data.placeholder}
+            defaultValue={
+              data.defaultValue
+                ? data.inputType === 'phone' && data.defaultValue.split(' ')[1]
+                  ? data.defaultValue.split(' ')[1]
+                  : data.defaultValue
+                : ''
+            }
+            onBlur={() => trigger(data.answerVariable)}
+          />
+          {data.inputType === 'password' && (
+            <Button
+              type='button'
+              className='rounded-l-none'
+              title={showPassword ? 'Hide Password' : 'Show Password'}
+              onClick={togglePasswordVisibility}>
+              <i className={showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'}></i>
+            </Button>
+          )}
+        </div>
+      </InputContainer>
+      {errors[data.answerVariable] &&
+        errorMessages &&
+        errorMessages.map((e, i) => (
+          <Typography key={i} variant='small' color='red' className='flex items-center gap-1 font-normal'>
+            <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' className='-mt-px h-4 w-4'>
+              <path
+                fillRule='evenodd'
+                d='M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z'
+                clipRule='evenodd'
+              />
+            </svg>
+            {e}
+          </Typography>
+        ))}
+    </Field>
+  );
+};
+
+export default InputField;
